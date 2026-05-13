@@ -53,3 +53,39 @@ install(TARGETS appCryptAlgorithm
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+
+# Для Windows: иконка и тип приложения
+if(WIN32)
+    set_target_properties(appCryptAlgorithm PROPERTIES WIN32_EXECUTABLE TRUE)
+endif()
+
+# --- СЕКЦИЯ ДЕПЛОЯ И СБОРКИ DEB ПАКЕТА (LINUX) ---
+if(UNIX AND NOT ANDROID)
+    include(GNUInstallDirs)
+
+    # Правила копирования бинарника и ресурсов при сборке пакета
+    install(TARGETS appCryptAlgorithm
+        BUNDLE DESTINATION .
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    )
+
+    # Метаданные для Linux DEB менеджера пакетов
+    set(CPACK_GENERATOR "DEB")
+    set(CPACK_PACKAGE_NAME "CipherAlghorithm")
+    set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
+    set(CPACK_PACKAGE_CONTACT "hfhdvdffvv@gmail.com") # Замените на свою почту
+    set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Cross-platform Qt6 Audio Visualizer Application")
+    set(CPACK_PACKAGE_VENDOR "SouthKartman")
+    set(CPACK_SECTION "utils")
+    set(CPACK_PACKAGE_ARCHITECTURE "amd64")
+
+    # Автоматический поиск и генерация системных зависимостей (glibc, libstdc++, X11 и т.д.)
+    set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+    
+    include(CPack)
+endif()
+
+
