@@ -84,7 +84,7 @@ if(UNIX AND NOT ANDROID)
 
     # Автоматический поиск и генерация системных зависимостей (glibc, libstdc++, X11 и т.д.)
     set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
-    
+    # //meow
     include(CPack)
 endif()
 
