@@ -29,7 +29,7 @@ jobs:
         run: |
           # Собираем все DLL в одну папку
           $deployTool = "$env:Qt6_DIR/bin/windeployqt.exe"
-          & $deployTool --qmldir . build/Release/appkursach.exe
+          & $deployTool --qmldir . build/Release/appCryptAlgorithm.exe
 
       - name: Upload Windows Artifact
         uses: actions/upload-artifact@v4
