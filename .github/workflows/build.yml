@@ -1,0 +1,79 @@
+name: Cross-Platform Build
+on: [push]
+
+jobs:
+  # --- СБОРКА WINDOWS (.EXE) ---
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: '6.4.2'
+          arch: 'win64_msvc2019_64'
+          modules: 'qtmultimedia qtshadertools' # Исправленное название модуля
+          install-deps: 'true'
+
+      - name: Build
+        shell: pwsh
+        run: |
+          cmake -B build `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DCMAKE_PREFIX_PATH="$env:Qt6_DIR"
+          cmake --build build --config Release
+
+      - name: Package Windows
+        shell: pwsh
+        run: |
+          # Собираем все DLL в одну папку
+          $deployTool = "$env:Qt6_DIR/bin/windeployqt.exe"
+          & $deployTool --qmldir . build/Release/appkursach.exe
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Cipher-Crypt
+          path: build/Release/
+
+  build-linux-deb:
+      runs-on: ubuntu-22.04
+      steps:
+      -  uses: actions/checkout@v4
+
+      - name: Install Build Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake ninja-build libgl1-mesa-dev libglu1-mesa-dev
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: '6.4.2'
+          host: 'linux'
+          target: 'desktop'
+          arch: 'gcc_64'
+          modules: 'qtmultimedia qtshadertools'
+          install-deps: 'true'
+
+      - name: Build and Package DEB
+        run: |
+          # Конфигурируем проект с путями Qt
+          cmake -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_PREFIX_PATH=$Qt6_DIR
+          
+          # Компилируем исполняемый файл
+          cmake --build build
+          
+          # Запускаем генерацию DEB пакета через CPack
+          cd build
+          cpack -G DEB
+
+      - name: Upload Linux DEB Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Cipher-Crypt
+          path: build/*.deb
+      
