@@ -72,6 +72,10 @@ if(UNIX AND NOT ANDROID)
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     )
 
+    install(FILES cipher-algorithm.desktop
+        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications
+    )
+
     # Метаданные для Linux DEB менеджера пакетов
     set(CPACK_GENERATOR "DEB")
     set(CPACK_PACKAGE_NAME "CipherAlghorithm")

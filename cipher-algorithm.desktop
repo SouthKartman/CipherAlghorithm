@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Cipher Algorithm
+Comment=Cross-platform Qt6 Cryptography Application
+Exec=appCryptAlgorithm
+Icon=utilities-terminal
+Terminal=false
+Categories=Utility;
